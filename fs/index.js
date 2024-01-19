@@ -1,4 +1,4 @@
-const fs = require("fs")
+ const fs = require("fs")
 
 
 //Blocking : read and write synchrous code :

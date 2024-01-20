@@ -27,37 +27,44 @@ const replaceTemplate = (template,product)=>{
         return output
     }
 
-const overview = fs.readFileSync(`${__dirname}/templates/template-overview.html`,'utf-8')
-const product = fs.readFileSync(`${__dirname}/templates/template-product.html`,'utf-8')
-const card = fs.readFileSync(`${__dirname}/templates/template-card.html`,'utf-8')
+const tempOverview = fs.readFileSync(`${__dirname}/templates/template-overview.html`,'utf-8')
+const tempProduct = fs.readFileSync(`${__dirname}/templates/template-product.html`,'utf-8')
+const tempCard = fs.readFileSync(`${__dirname}/templates/template-card.html`,'utf-8')
 
 const data = fs.readFileSync(`${__dirname}/fs/dev-data/data.json`,'utf-8')
  const dataObj = JSON.parse(data)
 
 const server = http.createServer((req,res)=>{
-    const pathName = req.url
+
+    const {query,pathname} = url.parse(req.url,true)
 
     // OVERVIEW PAGE :
 
-    if(pathName === "/" || pathName === '/overview'){
+    if(pathname === "/" || pathname === '/overview'){
         res.writeHead(200,{
             "Content-type" : "text/html"
         })
 
-       const cardHtml =   dataObj.map((item)=>replaceTemplate(card,item)).join('')
+       const cardHtml =   dataObj.map((item)=>replaceTemplate(tempCard,item)).join('')
         // console.log(cardHtml)
-        const output = overview.replace('{%PRODUCT_CARDS%}',cardHtml)
+        const output = tempOverview.replace('{%PRODUCT_CARDS%}',cardHtml)
         res.end(output)
     }
         // Product Page
-    else if (pathName === '/product'){
+    else if (pathname === '/product'){
         res.writeHead(200,{
             "Content-type" : "text/html"
         })
-        res.end(product)
+        const product = dataObj[query.id]
+
+        const output = replaceTemplate(tempProduct,product)
+
+        // console.log(query)
+
+        res.end(output)
     }
         // API
-    else if (pathName === "/api"){
+    else if (pathname === "/api"){
         //  fs.readFile("./starters/fs-starter/dev-data/data.json",'utf-8',(err,data)=>{
         //     if(err){
         //         res.end("errror!!")

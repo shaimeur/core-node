@@ -1,13 +1,11 @@
 const http = require("http");
 const fs = require("fs")
 const url = require("url")
-const port = 8000;
-const replaceTemplate = require("./utiles/replaceTemplate")
-// console.log(http.METHODS.length)
+const slugify = require("slugify")
 
-// for(let m of http.METHODS){
-//     console.log(m)
-// }
+const port = 8000;
+
+const replaceTemplate = require("./utiles/replaceTemplate")
 
 
 
@@ -17,7 +15,11 @@ const tempProduct = fs.readFileSync(`${__dirname}/templates/template-product.htm
 const tempCard = fs.readFileSync(`${__dirname}/templates/template-card.html`,'utf-8')
 
 const data = fs.readFileSync(`${__dirname}/fs/dev-data/data.json`,'utf-8')
+
  const dataObj = JSON.parse(data)
+ const slugs = dataObj.map((item)=>(slugify(item.productName,{lower:true})))
+console.log(slugs)
+ console.log(slugify("Fresh Avocado",{lower:true}))
 
 const server = http.createServer((req,res)=>{
 

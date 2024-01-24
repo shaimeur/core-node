@@ -14,11 +14,14 @@ const tempCard = fs.readFileSync(`${__dirname}/templates/template-card.html`, "u
 const data = fs.readFileSync(`${__dirname}/fs/dev-data/data.json`, "utf-8");
 
 const dataObj = JSON.parse(data);
+console.log(typeof dataObj);
 const slugs = dataObj.map((item) => slugify(item.productName, { lower: true }));
 console.log(slugs);
 console.log(slugify("Fresh Avocado", { lower: true }));
 
-const server = http.createServer((req, res) => {
+const server = http.createServer();
+
+server.on("request", (req, res) => {
 	const { query, pathname } = url.parse(req.url, true);
 
 	// OVERVIEW PAGE :
@@ -29,7 +32,7 @@ const server = http.createServer((req, res) => {
 		});
 
 		const cardHtml = dataObj.map((item) => replaceTemplate(tempCard, item)).join("");
-		// console.log(cardHtml)
+		console.log(cardHtml);
 		const output = tempOverview.replace("{%PRODUCT_CARDS%}", cardHtml);
 		res.end(output);
 	}
